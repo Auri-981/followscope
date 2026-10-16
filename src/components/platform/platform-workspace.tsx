@@ -11,6 +11,7 @@ import { Alert, Badge, Card, CardBody, CardHeader, Input, PageHeader, Progress }
 import { normalizeUsername } from "@/domain/platforms";
 import type { Platform } from "@/domain/types";
 import type { ListKind } from "@/importers/types";
+import { withBasePath } from "@/lib/base-path";
 import { formatDateTime, formatNumber } from "@/lib/format";
 import { officialProviders } from "@/providers/official-api-providers";
 import { useAppState } from "@/state/app-state";
@@ -89,7 +90,7 @@ export function PlatformWorkspace({ platform }: { platform: Platform }) {
     try {
       const files = await Promise.all(
         DEMO_FILES[platform].map(async ({ url, name }) => {
-          const res = await fetch(url);
+          const res = await fetch(withBasePath(url));
           if (!res.ok) throw new Error("demo_unavailable");
           return new File([await res.blob()], name, { lastModified: Date.now() });
         }),

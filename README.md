@@ -103,6 +103,39 @@ Solo las pruebas de rendimiento (imprimen tiempos y memoria):
 npm run bench
 ```
 
+## Versión web publicada (GitHub Pages)
+
+**https://auri-981.github.io/followscope/**
+
+Es una web estática: no hay servidor propio y los archivos que importas siguen procesándose solo en tu navegador.
+
+### Añadirla a la pantalla de inicio
+
+- **iPhone (Safari)**: abre la dirección → botón Compartir → **Añadir a pantalla de inicio**. Usa Safari normal, no la navegación privada.
+- **Android (Chrome)**: abre la dirección → menú ⋮ → **Instalar aplicación** o **Añadir a pantalla de inicio**.
+
+Se abre a pantalla completa con su propio icono (manifiesto PWA en `src/app/manifest.ts`, iconos en `public/icons/`, regenerables con `npm run icons`). Necesita conexión para cargarse: no hay modo sin conexión.
+
+### Publicar cambios
+
+```bash
+npm run deploy
+```
+
+El script (`scripts/deploy-pages.mjs`) genera la web estática en `out/` con el subdirectorio `/followscope` y la sube a la rama `gh-pages`, que es la que sirve GitHub Pages. Tarda uno o dos minutos en verse. Para probar la versión estática en local antes de publicar:
+
+```bash
+npm run build:static
+```
+
+```bash
+npm run preview:static
+```
+
+y abre http://localhost:4173/followscope/.
+
+Diferencias con `npm start`: GitHub Pages no permite cabeceras HTTP propias, así que la CSP se incluye como etiqueta `<meta>` (sin `frame-ancestors`, que solo funciona como cabecera) y no se envían `X-Frame-Options` ni `Referrer-Policy`. El paso de compilación también duplica con nombre aplanado los ficheros de precarga de Next 16 (`__next.<ruta>.__PAGE__.txt`), que sin servidor darían error 404.
+
 ## Cómo se usa
 
 1. Elige **Instagram** o **TikTok**.
@@ -218,7 +251,7 @@ La importación se ejecuta en un Web Worker para no bloquear la interfaz, y las 
 
 1. Validar los importadores con exportaciones **reales** de Instagram y TikTok y ajustar si el formato difiere.
 2. Completar y revisar legalmente la política de privacidad (responsable, contacto) y añadir aviso legal.
-3. Elegir alojamiento (cualquier hosting de Next.js; al no haber backend también se puede adaptar a exportación estática, trasladando las cabeceras de seguridad a la configuración del servidor web).
+3. Valorar un dominio propio y un alojamiento que permita cabeceras de seguridad (en GitHub Pages la CSP solo puede ir como `<meta>`).
 4. Revisar la marca definitiva (nombre, logotipo, dominio) y comprobar que no induce a pensar que es una app oficial de Meta o TikTok.
 5. Ejecutar `npm run lint`, `npm run typecheck`, `npm test` y `npm run test:e2e` en CI.
 

@@ -1,5 +1,6 @@
 import { ChevronDown } from "lucide-react";
 import type { Platform } from "@/domain/types";
+import { withBasePath } from "@/lib/base-path";
 
 const STEPS: Record<Platform, { steps: string[]; note: string }> = {
   instagram: {
@@ -41,7 +42,7 @@ export function ExportInstructions({ platform }: { platform: Platform }) {
         <p className="mt-3 text-xs text-muted">{note}</p>
         <p className="mt-2 text-xs text-muted">
           También puedes usar la plantilla CSV de FollowScope (columnas <code>username</code>, <code>display_name</code>, <code>list</code>):{" "}
-          <a href="/samples/plantilla-followscope.csv" download className="font-medium text-primary hover:underline">
+          <a href={withBasePath("/samples/plantilla-followscope.csv")} download className="font-medium text-primary hover:underline">
             descargar plantilla
           </a>
           .
