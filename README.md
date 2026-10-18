@@ -21,7 +21,7 @@ Calcula tres categorías, con F = seguidores y G = seguidos:
 - Importación de **Instagram** (ZIP completo o `followers_*.json` + `following.json`) y de **TikTok** (ZIP, `user_data*.json` o `Follower.txt` / `Following.txt`).
 - Formato **CSV/TXT genérico** (plantilla propia) y reimportación de la exportación **JSON completa** de FollowScope.
 - Lectura **segura de ZIP** sin cargarlo entero en memoria: solo se extraen los ficheros necesarios, con límites de tamaño y verificación CRC.
-- Validación con mensajes claros: archivo vacío, JSON inválido o truncado, CSV mal formado, campos ausentes, archivo de la otra plataforma, exportación en HTML, ZIP sin las listas, partes de la lista ausentes, duplicados, listas de fechas muy distintas, exportaciones antiguas, límites superados…
+- Validación con mensajes claros: archivo vacío, JSON inválido o truncado, CSV mal formado, campos ausentes, archivo de la otra plataforma, exportación en HTML, ZIP sin las listas, partes de la lista ausentes, exportaciones pedidas para un periodo limitado, duplicados, listas de fechas muy distintas, exportaciones antiguas, límites superados…
 - **Motor de comparación** O(n + m) con verificación de invariantes; si alguna falla, el resultado no se muestra como válido.
 - Dashboard de resultados: recuentos, gráfico de composición, tres pestañas, búsqueda por usuario o nombre, orden alfabético o por fecha, limpiar filtros, contador de coincidencias, lista virtualizada, copiar usuario y abrir perfil.
 - **Exportación CSV y JSON**: todas las categorías, una categoría, la categoría filtrada, el resumen y el historial. CSV con escapado RFC 4180, BOM UTF-8, separador configurable (`,` o `;`) y protección contra inyección de fórmulas.
@@ -35,7 +35,7 @@ Calcula tres categorías, con F = seguidores y G = seguidos:
 
 - **Conexión con las API oficiales**: no implementada porque ninguna API oficial de consumo permite obtener las listas de seguidores/seguidos (ver [Limitaciones de las API](#limitaciones-de-las-api-oficiales)). Los adaptadores existen (`src/providers/official-api-providers.ts`) y devuelven explícitamente «no disponible».
 - **Multiusuario, cuentas propias y sincronización**: la capa de persistencia está preparada (repositorio por «espacio» de usuario), pero no hay backend.
-- Los importadores siguen la estructura **observada** de las exportaciones de Instagram y TikTok (ninguna plataforma publica un esquema oficial) y se han probado con archivos sintéticos que la imitan. **No se han validado contra una exportación real**: conviene hacerlo antes de publicar (ver [Formatos admitidos](#formatos-admitidos)).
+- Los importadores siguen la estructura **observada** de las exportaciones (ninguna plataforma publica un esquema oficial). El de **Instagram** se ha validado con una exportación real (ZIP JSON de octubre de 2026): estructura reconocida en el 100 % de los registros, sin duplicados ni registros inválidos. El de **TikTok** solo se ha probado con archivos sintéticos: conviene validarlo con una exportación real (ver [Formatos admitidos](#formatos-admitidos)).
 - La política de privacidad (`/privacy`) es un **borrador pendiente de revisión legal**.
 
 ---
@@ -149,7 +149,9 @@ Para probar sin datos propios, pulsa **Probar con datos de demostración**. Los 
 
 ### Cómo obtener la exportación
 
-- **Instagram**: Centro de cuentas → Tu información y permisos → Descargar tu información → «Parte de tu información» → «Seguidores y seguidos» → formato **JSON** (no HTML) → intervalo «Desde el principio».
+- **Instagram**: Centro de cuentas → Tu información y permisos → Descargar tu información → «Parte de tu información» → «Seguidores y seguidos» → formato **JSON** (no HTML) → intervalo de fechas **«Desde el principio»**.
+
+  > Con un intervalo limitado (por ejemplo «Último año»), `followers_1.json` solo incluye a quienes te siguieron dentro de ese periodo, mientras que `following.json` puede incluir cuentas más antiguas. Los seguidores antiguos aparecerían entonces como «no te siguen de vuelta». Comprobado con una exportación real: faltaban todos los seguidores anteriores a la fecha de inicio del periodo. FollowScope lo detecta (`src/importers/period.ts`): si sigues a 5 o más cuentas desde más de 60 días antes del seguidor más antiguo del archivo, avisa y marca el análisis como «con limitaciones».
 - **TikTok**: Ajustes y privacidad → Cuenta → Descargar tus datos → incluir «Seguidores» y «Siguiendo» → formato **JSON** (o TXT).
 
 Los menús de las plataformas cambian con frecuencia; la app muestra estas instrucciones en cada pantalla de plataforma.

@@ -6,6 +6,7 @@ import type { DataWarning, Platform } from "@/domain/types";
 import { parseGenericCsv, parseGenericJson, parseSimpleList, FOLLOWSCOPE_RESULTS_FORMAT } from "./generic";
 import { isInstagramListPath, looksLikeInstagram, parseInstagramJson } from "./instagram";
 import { isPlainObject, parseJsonSafely } from "./json";
+import { detectLimitedPeriod, limitedPeriodWarning } from "./period";
 import { decodeText, extensionOf } from "./text";
 import { isTikTokListPath, looksLikeTikTok, looksLikeTikTokTxt, parseTikTokJson, parseTikTokTxt } from "./tiktok";
 import {
@@ -338,6 +339,13 @@ export async function importFiles(request: ImportRequest): Promise<ImportOutcome
   }
 
   const dateGapDays = listDateGapDays({ followers: followers?.fileDate, following: following?.fileDate });
+  if (followers && following) {
+    const limited = detectLimitedPeriod(followers.entries, following.entries);
+    if (limited) {
+      incomplete = true;
+      warnings.push(limitedPeriodWarning(limited));
+    }
+  }
   if (incomplete) {
     warnings.push({
       code: "incomplete_data",

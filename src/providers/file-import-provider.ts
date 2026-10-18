@@ -38,7 +38,8 @@ export class FileImportProvider implements SocialDataProvider {
       capturedAt: list.fileDate,
       complete: !this.outcome.incomplete,
       origin: list.sourceFiles,
-      warnings: list.warnings,
+      // Incluye también los avisos globales de la importación (p. ej. periodo limitado).
+      warnings: [...this.outcome.warnings, ...list.warnings],
     };
   }
 
