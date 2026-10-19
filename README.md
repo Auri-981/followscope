@@ -12,6 +12,20 @@ Calcula tres categorías, con F = seguidores y G = seguidos:
 
 > Nombre, lema y textos de marca: `src/config/brand.ts`. Colores: tokens CSS en `src/app/globals.css`.
 
+### Icono
+
+Dos círculos que se cruzan (seguidores y seguidos) con la zona común resaltada (mutuos). El círculo derecho es también una lupa. El diseño está en `scripts/icon-design.mjs`, y `npm run icons` regenera todas las variantes:
+
+| Archivo | Uso |
+| --- | --- |
+| `branding/followscope-icon.svg` | Original editable (vectorial) |
+| `branding/followscope-icon-1024.png` | Versión grande, cuadrada |
+| `branding/followscope-whatsapp.png` | Foto de perfil de WhatsApp (1024 px, con margen para el recorte circular) |
+| `public/icons/*.png` | Pantalla de inicio (iPhone y Android, incluida la versión «maskable») |
+| `src/app/icon.svg` | Favicon del navegador |
+
+El logotipo de la interfaz (`src/components/brand.tsx`) usa el mismo dibujo.
+
 ---
 
 ## Estado del proyecto
