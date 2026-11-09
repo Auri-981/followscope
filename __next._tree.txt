@@ -1,0 +1,3 @@
+:HL["/followscope/_next/static/chunks/42m0vgdheu0ke.css","style"]
+1:[["children",{"s":"__PAGE__","h":160}]]
+0:{"b":"6O1QJdhd0Z6JkK8hS_UTA","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
