@@ -3,7 +3,7 @@
 import { Camera, History, House, Monitor, Moon, Music2, Settings as SettingsIcon, ShieldCheck, Sun } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { brand } from "@/config/brand";
 import { cn } from "@/lib/cn";
 import { useAppState } from "@/state/app-state";
@@ -41,8 +41,30 @@ function ThemeToggle() {
   );
 }
 
+/**
+ * Interfaz fija, sin zoom. La etiqueta viewport (user-scalable=no) basta en
+ * Android, pero Safari en iPhone la ignora: ahí se bloquea el pellizco
+ * cancelando sus gestos. El doble toque se desactiva con touch-action en CSS.
+ */
+function useBlockZoom() {
+  useEffect(() => {
+    const cancel = (event: Event) => event.preventDefault();
+    const cancelPinch = (event: TouchEvent) => {
+      if (event.touches.length > 1) event.preventDefault();
+    };
+    const gestures = ["gesturestart", "gesturechange", "gestureend"] as const;
+    gestures.forEach((name) => document.addEventListener(name, cancel, { passive: false }));
+    document.addEventListener("touchmove", cancelPinch, { passive: false });
+    return () => {
+      gestures.forEach((name) => document.removeEventListener(name, cancel));
+      document.removeEventListener("touchmove", cancelPinch);
+    };
+  }, []);
+}
+
 export function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname() ?? "/";
+  useBlockZoom();
   return (
     <div className="min-h-dvh lg:flex">
       <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-3 focus:top-3 focus:z-[70] focus:rounded-lg focus:bg-surface focus:px-3 focus:py-2">

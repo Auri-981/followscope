@@ -119,7 +119,7 @@ export function ImportPreview({
                 <label className="flex items-center gap-2 text-xs">
                   <span className="text-muted">Contiene:</span>
                   <Select
-                    className="h-8 text-xs"
+                    className="h-8 text-base sm:text-xs"
                     defaultValue=""
                     disabled={disabled}
                     onChange={(e) => e.target.value && onChooseKind(f.fileName, e.target.value as ListKind)}

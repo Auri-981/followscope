@@ -24,6 +24,9 @@ const staticExport = process.env.NEXT_PUBLIC_STATIC_EXPORT === "true";
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // Interfaz fija, como una app: sin ampliar ni reducir con los dedos.
+  maximumScale: 1,
+  userScalable: false,
   viewportFit: "cover",
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#f6f7fb" },

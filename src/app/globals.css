@@ -130,6 +130,13 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Sin zoom con doble toque ni ajuste automático del tamaño de letra al girar el móvil. */
+html {
+  touch-action: manipulation;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 :focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
